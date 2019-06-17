@@ -17,61 +17,6 @@
 * under the License.
 */
 
-function createNewFileEntry(imgUri) {
-  window.resolveLocalFileSystemURL(cordova.file.cacheDirectory, function success(dirEntry) {
-
-      // JPEG file
-      dirEntry.getFile("tempFile.jpeg", { create: true, exclusive: false }, function (fileEntry) {
-
-          // Do something with it, like write to it, upload it, etc.
-          // writeFile(fileEntry, imgUri);
-          console.log("got file: " + fileEntry.fullPath);
-          // displayFileData(fileEntry.fullPath, "File copied to");
-
-      }, console.error);
-
-  }, console.error);
-}
-
-function openCamera() {
-  alert(JSON.stringify(window.QRScanner));
-
-  var srcType = Camera.PictureSourceType.CAMERA;
-  var options = setOptions(srcType);
-  var func = createNewFileEntry;
-
-  navigator.camera.getPicture(function cameraSuccess(imageUri) {
-
-      displayImage(imageUri);
-      // You may choose to copy the picture, save it somewhere, or upload.
-      func(imageUri);
-
-  }, function cameraError(error) {
-      console.debug("Unable to obtain picture: " + error, "app");
-
-  }, options);
-}
-
-function displayContents(err, text){
-  if(err){
-    // an error occurred, or the scan was canceled (error code `6`)
-  } else {
-    // The scan completed, display the contents of the QR code:
-    alert(text);
-  }
-}
-
-function qrCodeCamera() {
-  // Start a scan. Scanning will continue until something is detected or
-// `QRScanner.cancelScan()` is called.
-QRScanner.scan(displayContents);
-
-// Make the webview transparent so the video preview is visible behind it.
-QRScanner.show();
-// Be sure to make any opaque HTML elements transparent here to avoid
-// covering the video.
-}
-
 function qrCodeRead() {
   cordova.plugins.barcodeScanner.scan(
     function (result) {
@@ -97,41 +42,6 @@ function qrCodeRead() {
         disableSuccessBeep: false // iOS and Android
     }
   );
-}
-
-function displayImage(imgUri) {
-  var elem = document.getElementById('imageFile');
-  elem.src = imgUri;
-}
-
-function setOptions(srcType) {
-  var options = {
-      // Some common settings are 20, 50, and 100
-      quality: 50,
-      destinationType: Camera.DestinationType.FILE_URI,
-      // In this app, dynamically set the picture source, Camera or photo gallery
-      sourceType: srcType,
-      encodingType: Camera.EncodingType.JPEG,
-      mediaType: Camera.MediaType.PICTURE,
-      correctOrientation: true  //Corrects Android orientation quirks
-  }
-  return options;
-}
-
-function cameraTakePicture() {
-  navigator.camera.getPicture(onSuccess, onFail, {
-      quality: 50,
-      destinationType: Camera.DestinationType.DATA_URL
-  });
-
-  function onSuccess(imageData) {
-      var image = document.getElementById('myImage');
-      image.src = "data:image/jpeg;base64," + imageData;
-  }
-
-  function onFail(message) {
-      alert('Failed because: ' + message);
-  }
 }
 
 var app = {
